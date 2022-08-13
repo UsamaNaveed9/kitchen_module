@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include kitchen_module *.css
+recursive-include kitchen_module *.csv
+recursive-include kitchen_module *.html
+recursive-include kitchen_module *.ico
+recursive-include kitchen_module *.js
+recursive-include kitchen_module *.json
+recursive-include kitchen_module *.md
+recursive-include kitchen_module *.png
+recursive-include kitchen_module *.py
+recursive-include kitchen_module *.svg
+recursive-include kitchen_module *.txt
+recursive-exclude kitchen_module *.pyc
