@@ -1,0 +1,198 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:MP-{#####}",
+ "creation": "2022-08-15 10:47:00.701592",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "get_items_from",
+  "sales_order",
+  "material_request",
+  "from_date",
+  "to_date",
+  "column_break_2",
+  "posting_date",
+  "source_warehouse",
+  "target_warehouse",
+  "section_break_11",
+  "get_sales_orders",
+  "sales_orders",
+  "section_break_13",
+  "get_material_requests",
+  "material_requests",
+  "section_break_1",
+  "get_items",
+  "main_items",
+  "section_break_2",
+  "bom_list",
+  "section_break_4",
+  "recipe_items",
+  "amended_from"
+ ],
+ "fields": [
+  {
+   "fieldname": "main_items",
+   "fieldtype": "Table",
+   "label": "Main Items",
+   "options": "MP Main Items"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Meal Process",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_2",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "bom_list",
+   "fieldtype": "Table",
+   "label": "BOM List",
+   "options": "MP BOM List"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "recipe_items",
+   "fieldtype": "Table",
+   "label": "Recipe Items",
+   "options": "MP Recipe Items"
+  },
+  {
+   "depends_on": "eval: doc.get_items_from == \"Sales Order\"",
+   "fieldname": "sales_order",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Sales Order",
+   "options": "Sales Order"
+  },
+  {
+   "fieldname": "section_break_1",
+   "fieldtype": "Section Break",
+   "label": "Manufacture Items"
+  },
+  {
+   "fieldname": "column_break_2",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "get_items_from",
+   "fieldtype": "Select",
+   "label": "Get Items From",
+   "options": "\nSales Order\nMaterial Request"
+  },
+  {
+   "depends_on": "eval: doc.get_items_from == \"Material Request\"",
+   "fieldname": "material_request",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Material Request",
+   "options": "Material Request"
+  },
+  {
+   "fieldname": "get_items",
+   "fieldtype": "Button",
+   "label": "Get Items"
+  },
+  {
+   "fieldname": "from_date",
+   "fieldtype": "Date",
+   "label": "From Date"
+  },
+  {
+   "fieldname": "to_date",
+   "fieldtype": "Date",
+   "label": "To Date"
+  },
+  {
+   "fieldname": "get_sales_orders",
+   "fieldtype": "Button",
+   "label": "Get Sales Orders"
+  },
+  {
+   "fieldname": "get_material_requests",
+   "fieldtype": "Button",
+   "label": "Get Material Requests"
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Source Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Target Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "depends_on": "eval: doc.get_items_from == \"Sales Order\"",
+   "fieldname": "section_break_11",
+   "fieldtype": "Section Break",
+   "label": "Sales Order Details"
+  },
+  {
+   "fieldname": "sales_orders",
+   "fieldtype": "Table",
+   "label": "Sales Orders",
+   "options": "Production Plan Sales Order"
+  },
+  {
+   "depends_on": "eval: doc.get_items_from == \"Material Request\"",
+   "fieldname": "section_break_13",
+   "fieldtype": "Section Break",
+   "label": "Material Request Details"
+  },
+  {
+   "fieldname": "material_requests",
+   "fieldtype": "Table",
+   "label": "Material Requests",
+   "options": "Production Plan Material Request"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2022-08-20 12:51:19.963382",
+ "modified_by": "Administrator",
+ "module": "Kitchen Module",
+ "name": "Meal Process",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}

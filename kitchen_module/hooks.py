@@ -173,3 +173,4 @@ user_data_fields = [
 # 	"kitchen_module.auth.validate"
 # ]
 
+fixtures = ["Custom Field"]
