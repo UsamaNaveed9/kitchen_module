@@ -6,8 +6,7 @@ frappe.ui.form.on('Meal Process', {
 		frm.fields_dict['main_items'].grid.get_field("item_code").get_query = function(doc, cdt, cdn) {
 	    return {
 		    filters: [
-			    ['Item', 'item_group', 'in',
-				    'MAIN ITEM'],
+			    ['Item', 'has_recipe', '=','1'],
 		    ]
 	    }
         }
