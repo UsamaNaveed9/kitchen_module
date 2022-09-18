@@ -1,12 +1,13 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:MP-{#####}",
+ "autoname": "naming_series:",
  "creation": "2022-08-15 10:47:00.701592",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "naming_series",
   "get_items_from",
   "sales_order",
   "material_request",
@@ -168,12 +169,18 @@
    "fieldtype": "Table",
    "label": "Material Requests",
    "options": "Production Plan Material Request"
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "label": "Series",
+   "options": "MP-.YY.-"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-08-20 12:51:19.963382",
+ "modified": "2022-09-18 14:10:59.256334",
  "modified_by": "Administrator",
  "module": "Kitchen Module",
  "name": "Meal Process",

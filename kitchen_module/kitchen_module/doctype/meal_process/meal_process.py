@@ -17,7 +17,8 @@ class MealProcess(Document):
 								j.amount = j.qty * j.rate
 								cost = cost + j.amount
 						else:
-							cost = cost + j.amount	
+							if j.amount:
+								cost = cost + j.amount	
 				i.cost = cost
 				
 		elif self.get_items_from == "Material Request":
@@ -31,7 +32,8 @@ class MealProcess(Document):
 								j.amount = j.qty * j.rate
 								cost = cost + j.amount
 						else:
-							cost = cost + j.amount	
+							if j.amount:
+								cost = cost + j.amount	
 				i.cost = cost
 				
 
@@ -42,6 +44,8 @@ class MealProcess(Document):
 				se.stock_entry_type = "Manufacture"
 				se.meal_process = self.name
 				se.from_bom = 1
+				se.from_warehouse = self.source_warehouse
+				se.to_warehouse = self.target_warehouse
 				for j in self.bom_list:
 					if i.item_code == j.main_item and i.sales_order_ref == j.sales_order_ref:
 						se.bom_no = j.bom
@@ -67,7 +71,7 @@ class MealProcess(Document):
 				se.append("items", se_item)		
 
 				se.save()
-				se.submit() 
+				se.submit()
 
 		elif self.get_items_from == "Material Request":	
 			for i in self.main_items:
@@ -75,6 +79,8 @@ class MealProcess(Document):
 				se.stock_entry_type = "Manufacture"
 				se.meal_process = self.name
 				se.from_bom = 1
+				se.from_warehouse = self.source_warehouse
+				se.to_warehouse = self.target_warehouse
 				for j in self.bom_list:
 					if i.item_code == j.main_item and i.material_request_ref == j.material_request_ref:
 						se.bom_no = j.bom
@@ -101,32 +107,3 @@ class MealProcess(Document):
 
 				se.save()
 				se.submit()
-
-
-
-		# se = frappe.new_doc("Stock Entry")
-		# se.stock_entry_type = "Manufacture"
-		# se.meal_process = self.name
-		# for i in self.recipe_items:
-		# 	se_item = frappe.new_doc("Stock Entry Detail")
-		# 	se_item.s_warehouse = self.source_warehouse
-		# 	se_item.item_code = i.item_code
-		# 	se_item.qty = i.qty
-		# 	se_item.basic_rate = i.rate
-		# 	if i.rate == 0:
-		# 		se_item.allow_zero_valuation_rate = 1
-		# 	se.append("items", se_item)
-
-		# for j in self.main_items:
-		# 	se_item = frappe.new_doc("Stock Entry Detail")
-		# 	se_item.t_warehouse = self.target_warehouse
-		# 	se_item.item_code = j.item_code
-		# 	se_item.is_finished_item = 1
-		# 	se_item.qty = j.qty
-		# 	rate = j.cost/j.qty
-		# 	se_item.basic_rate = rate
-		# 	se.append("items", se_item)
-
-		# se.save()
-		# se.submit()
-
