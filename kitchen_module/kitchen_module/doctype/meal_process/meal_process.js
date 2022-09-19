@@ -76,7 +76,7 @@ frappe.ui.form.on('Meal Process', {
 								main_item.uom = d.items[i].uom;
 								main_item.rate = d.items[i].rate;
 								main_item.amount = d.items[i].amount;
-								main_item.seles_order_ref = sales_orders[s].sales_order;
+								main_item.sales_order_ref = sales_orders[s].sales_order;
 								cur_frm.refresh_field("main_items");
 	
 								frappe.db.get_value('BOM', {item: d.items[i].item_code, is_default: '1'}, ['name','total_cost'])

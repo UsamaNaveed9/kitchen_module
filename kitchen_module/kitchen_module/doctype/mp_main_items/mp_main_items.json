@@ -13,7 +13,7 @@
   "rate",
   "amount",
   "cost",
-  "seles_order_ref",
+  "sales_order_ref",
   "material_request_ref"
  ],
  "fields": [
@@ -68,22 +68,22 @@
    "options": "UOM"
   },
   {
-   "fieldname": "seles_order_ref",
-   "fieldtype": "Link",
-   "label": "Seles Order Ref",
-   "options": "Sales Order"
-  },
-  {
    "fieldname": "material_request_ref",
    "fieldtype": "Link",
    "label": "Material Request Ref",
    "options": "Material Request"
+  },
+  {
+   "fieldname": "sales_order_ref",
+   "fieldtype": "Link",
+   "label": "Sales Order Ref",
+   "options": "Sales Order"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2022-09-15 10:27:28.079621",
+ "modified": "2022-09-19 12:19:09.156750",
  "modified_by": "Administrator",
  "module": "Kitchen Module",
  "name": "MP Main Items",
