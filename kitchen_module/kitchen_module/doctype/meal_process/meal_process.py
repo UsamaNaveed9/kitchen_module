@@ -10,7 +10,7 @@ class MealProcess(Document):
 			for i in self.main_items:
 				cost = 0
 				for j in self.recipe_items:
-					if i.item_code == j.parent_item and i.seles_order_ref == j.sales_order_ref:
+					if i.item_code == j.parent_item and i.sales_order_ref == j.sales_order_ref:
 						if i.qty > 1:
 							j.qty = j.qty * i.qty
 							if j.rate:
@@ -102,6 +102,7 @@ class MealProcess(Document):
 				se_item.item_code = i.item_code
 				se_item.is_finished_item = 1
 				se_item.qty = i.qty
+				se_item.uom = i.uom
 				se_item.basic_rate = i.cost/i.qty
 				se.append("items", se_item)		
 

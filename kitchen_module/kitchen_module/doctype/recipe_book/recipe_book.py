@@ -42,6 +42,24 @@ class RecipeBook(Document):
 			bom.submit()
 			self.bom = bom.name
 
+		if not self.uom_added:
+			if self.additional_uom:
+				item = frappe.get_doc('Item', self.item_code)
+				item_uom = frappe.new_doc("UOM Conversion Detail")
+				item_uom.uom = self.additional_uom
+				item_uom.conversion_factor = self.quantity
+				item.append("uoms", item_uom)
+				item.save()
+				self.uom_added = "added"
+		else:
+			if self.additional_uom:
+				item = frappe.get_doc('Item', self.item_code)
+				for i in item.uoms:
+					if i.uom == self.additional_uom:
+						i.conversion_factor = self.quantity
+				item.save()
+
+
 	def before_cancel(self):
 		if self.bom:
 			bom = frappe.get_doc('BOM', self.bom)
