@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+from frappe import _, msgprint
 from frappe.model.document import Document
 
 class MealProcess(Document):
@@ -37,7 +38,7 @@ class MealProcess(Document):
 				i.cost = cost
 				
 
-	def before_submit(self):
+	def on_submit(self):
 		if self.get_items_from == "Sales Order":
 			for i in self.main_items:
 				se = frappe.new_doc("Stock Entry")
@@ -108,3 +109,10 @@ class MealProcess(Document):
 
 				se.save()
 				se.submit()
+
+	def submit(self):
+		if len(self.main_items) > 5:
+			msgprint(_("The task has been enqueued as a background job. In case there is any issue on processing in background, the system will add a comment about the error on this Meal Process and revert to the Draft stage"))
+			self.queue_action('submit', timeout=3000)
+		else:
+			self._submit()			
