@@ -4,5 +4,5 @@
 # import frappe
 import unittest
 
-class TestRecipeBook(unittest.TestCase):
+class TestIngredientBook(unittest.TestCase):
 	pass

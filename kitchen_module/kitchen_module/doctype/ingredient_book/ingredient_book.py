@@ -5,10 +5,7 @@ from __future__ import unicode_literals
 import frappe
 from frappe.model.document import Document
 
-from erpnext.manufacturing.doctype.bom import bom
-
-
-class RecipeBook(Document):
+class IngredientBook(Document):
 	def before_submit(self):
 		if not self.bom:
 			bom = frappe.new_doc("BOM")
@@ -66,8 +63,7 @@ class RecipeBook(Document):
 			bom.is_active = 0
 			bom.is_default = 0
 			bom.save()
-			self.bom = ""            
-
+			self.bom = "" 
 
 
 @frappe.whitelist(allow_guest = True)
@@ -79,4 +75,4 @@ def get_exploded_list(item, exp_list):
 			get_exploded_list(i[0] , exp_list)
 		else:
 			exp_list.append(i)
-	return exp_list						
+	return exp_list

@@ -1,7 +1,7 @@
 // Copyright (c) 2022, SMB and contributors
 // For license information, please see license.txt
 
-frappe.ui.form.on('Recipe Book', {
+frappe.ui.form.on('Ingredient Book', {
 	refresh: function(frm) {
 		frm.set_query("item_code", function(){
 				return{
@@ -24,7 +24,7 @@ frappe.ui.form.on('Recipe Book', {
 		}
 	}
 });
-frappe.ui.form.on("Recipe Book Items", {
+frappe.ui.form.on("Ingredient Book Items", {
 	item_code:function(frm, cdt, cdn){
 			let row = locals[cdt][cdn];
 			if(row.item_code){

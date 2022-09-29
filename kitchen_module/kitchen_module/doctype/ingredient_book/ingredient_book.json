@@ -24,7 +24,6 @@
   "column_break_13",
   "total_amount",
   "section_break_15",
-  "exploded_items",
   "bom",
   "amended_from"
  ],
@@ -38,10 +37,16 @@
    "reqd": 1
   },
   {
-   "default": "1",
-   "fieldname": "quantity",
-   "fieldtype": "Float",
-   "label": "Quantity"
+   "fetch_from": "item_code.item_group",
+   "fieldname": "item_group",
+   "fieldtype": "Link",
+   "label": "Item Category",
+   "options": "Item Group"
+  },
+  {
+   "fieldname": "item_price",
+   "fieldtype": "Currency",
+   "label": "Price"
   },
   {
    "fieldname": "company",
@@ -67,9 +72,22 @@
    "options": "UOM"
   },
   {
-   "fieldname": "item_price",
-   "fieldtype": "Currency",
-   "label": "Price"
+   "default": "1",
+   "fieldname": "quantity",
+   "fieldtype": "Float",
+   "label": "Quantity"
+  },
+  {
+   "fieldname": "additional_uom",
+   "fieldtype": "Link",
+   "label": "Additional UOM",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "uom_added",
+   "fieldtype": "Data",
+   "hidden": 1,
+   "label": "UOM Added"
   },
   {
    "fieldname": "section_break_9",
@@ -79,7 +97,7 @@
    "fieldname": "items",
    "fieldtype": "Table",
    "label": "Items",
-   "options": "Recipe Book Items",
+   "options": "Ingredient Book Items",
    "reqd": 1
   },
   {
@@ -97,27 +115,13 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "section_break_15",
-   "fieldtype": "Section Break"
-  },
-  {
-   "fieldname": "exploded_items",
-   "fieldtype": "Table",
-   "hidden": 1,
-   "label": "Exploded Items",
-   "options": "Exploded Item"
-  },
-  {
    "fieldname": "total_amount",
    "fieldtype": "Currency",
    "label": "Total Material Cost"
   },
   {
-   "fetch_from": "item_code.item_group",
-   "fieldname": "item_group",
-   "fieldtype": "Link",
-   "label": "Item Category",
-   "options": "Item Group"
+   "fieldname": "section_break_15",
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "bom",
@@ -130,30 +134,18 @@
    "fieldtype": "Link",
    "label": "Amended From",
    "no_copy": 1,
-   "options": "Recipe Book",
+   "options": "Ingredient Book",
    "print_hide": 1,
    "read_only": 1
-  },
-  {
-   "fieldname": "additional_uom",
-   "fieldtype": "Link",
-   "label": "Additional UOM",
-   "options": "UOM"
-  },
-  {
-   "fieldname": "uom_added",
-   "fieldtype": "Data",
-   "hidden": 1,
-   "label": "UOM Added"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2022-09-21 16:13:34.426494",
+ "modified": "2022-09-28 14:07:36.349956",
  "modified_by": "Administrator",
  "module": "Kitchen Module",
- "name": "Recipe Book",
+ "name": "Ingredient Book",
  "owner": "Administrator",
  "permissions": [
   {
