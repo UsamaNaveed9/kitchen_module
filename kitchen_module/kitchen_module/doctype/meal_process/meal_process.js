@@ -64,126 +64,128 @@ frappe.ui.form.on('Meal Process', {
 				frm.clear_table("bom_list");
 				frm.clear_table("recipe_items");
 				let sales_orders = cur_frm.doc.sales_orders;
-				for(let s=0; s<sales_orders.length; s++){
-				frappe.db.get_doc('Sales Order', sales_orders[s].sales_order)
-					.then(d => {
-							//console.log(d.items);
-							for (let i = 0; i < d.items.length; i++){
-								let main_item = cur_frm.add_child("main_items");
-								main_item.item_code = d.items[i].item_code;
-								main_item.item_name = d.items[i].item_name;
-								main_item.qty = d.items[i].qty;
-								main_item.uom = d.items[i].uom;
-								main_item.rate = d.items[i].rate;
-								main_item.amount = d.items[i].amount;
-								main_item.sales_order_ref = sales_orders[s].sales_order;
-								cur_frm.refresh_field("main_items");
-	
-								frappe.db.get_value('BOM', {item: d.items[i].item_code, is_default: '1'}, ['name','total_cost'])
-								.then(r => {
-										let values = r.message;
-										//console.log(values);
-										let t_bom = cur_frm.add_child("bom_list");
-										t_bom.bom = values.name;
-										t_bom.main_item = d.items[i].item_code;
-										t_bom.cost_per_unit = values.total_cost;
-										t_bom.sales_order_ref = sales_orders[s].sales_order;
-										cur_frm.refresh_field("bom_list");
-	
-										frappe.db.get_doc('BOM', values.name)
-											.then(b => {
-												//console.log(b.items);
-												for (let j = 0; j < b.items.length; j++){
-													let recipe_item = cur_frm.add_child("recipe_items");
-													recipe_item.item_code = b.items[j].item_code;
-													recipe_item.item_name = b.items[j].item_name;
-													recipe_item.qty = b.items[j].qty;
-													recipe_item.uom = b.items[j].uom;
-													frappe.db.get_value("Bin", {"item_code":b.items[j].item_code, "warehouse":cur_frm.doc.source_warehouse}, ["actual_qty","valuation_rate"]).then((r)=>{
-														if(r.message.actual_qty){
-															recipe_item.available_qty = r.message.actual_qty;
-														}
-														if(r.message.valuation_rate){
-															let price = 0;
-															price = r.message.valuation_rate
-															recipe_item.rate = price;
-															recipe_item.amount = b.items[j].qty * price;
-														}
-													cur_frm.refresh_field("recipe_items");
-													})
-													recipe_item.parent_item = d.items[i].item_code;
-													recipe_item.bom = values.name;
-													recipe_item.sales_order_ref = sales_orders[s].sales_order;
-												}
-										cur_frm.refresh_field("recipe_items");
-										})
-								})
-							}		
-					})
+				var sales_orders_numbers = [];
+				for(var i in sales_orders){
+					sales_orders_numbers.push(sales_orders[i].sales_order);
 				}
+				//console.log(sales_orders_numbers);
+				frappe.call({
+						method: "kitchen_module.kitchen_module.doctype.meal_process.meal_process.sales_order_get_items",
+						args: {
+								"sales_orders": sales_orders_numbers,
+								"source_warehouse": frm.doc.source_warehouse
+						},
+						freeze: true,
+    					freeze_message: "Processing",
+						callback: function(r) {
+								if(r.message) {
+									//console.log(r.message);
+									let main_items = r.message[0];
+									let boms = r.message[1];
+									let recipe_items = r.message[2];
+									console.log(main_items,boms,recipe_items);
+									for (let i = 0; i < main_items.length; i++){
+										let main_item = cur_frm.add_child("main_items");
+											main_item.item_code = main_items[i].item_code;
+											main_item.item_name = main_items[i].item_name;
+											main_item.qty = main_items[i].qty;
+											main_item.uom = main_items[i].uom;
+											main_item.rate = main_items[i].rate;
+											main_item.amount = main_items[i].amount;
+											main_item.sales_order_ref = main_items[i].parent;
+											cur_frm.refresh_field("main_items");
+									}
+
+									for(let j=0;j<boms.length; j++){
+										let t_bom = cur_frm.add_child("bom_list");
+										t_bom.bom = boms[j].bom_name;
+										t_bom.main_item = boms[j].main_item;
+										t_bom.cost_per_unit = boms[j].total_cost;
+										t_bom.sales_order_ref = boms[j].sales_order;
+										cur_frm.refresh_field("bom_list");
+									}
+
+									for (let k = 0; k < recipe_items.length; k++){
+										let recipe_item = cur_frm.add_child("recipe_items");
+											recipe_item.item_code = recipe_items[k].item_code;
+											recipe_item.item_name = recipe_items[k].item_name;
+											recipe_item.qty = recipe_items[k].qty;
+											recipe_item.uom = recipe_items[k].uom;
+											recipe_item.available_qty = recipe_items[k].available_qty;
+											recipe_item.rate = recipe_items[k].rate;
+											recipe_item.amount = recipe_items[k].amount;
+											recipe_item.parent_item = recipe_items[k].parent_item;
+											recipe_item.bom = recipe_items[k].bom;
+											recipe_item.sales_order_ref = recipe_items[k].sales_order;
+											cur_frm.refresh_field("recipe_items");
+									} 	
+								}
+						}
+				});
 			}
 			else{
 				frm.clear_table("main_items");
 				frm.clear_table("bom_list");
 				frm.clear_table("recipe_items");
 				let material_requests = cur_frm.doc.material_requests;
-				for(let s=0; s<material_requests.length; s++){
-				frappe.db.get_doc('Material Request', material_requests[s].material_request)
-					.then(d => {
-							//console.log(d.items);
-							for (let i = 0; i < d.items.length; i++){
-								let main_item = cur_frm.add_child("main_items");
-								main_item.item_code = d.items[i].item_code;
-								main_item.item_name = d.items[i].item_name;
-								main_item.qty = d.items[i].qty;
-								main_item.uom = d.items[i].uom;
-								main_item.rate = d.items[i].rate;
-								main_item.amount = d.items[i].amount;
-								main_item.material_request_ref = material_requests[s].material_request;
-								cur_frm.refresh_field("main_items");
-	
-								frappe.db.get_value('BOM', {item: d.items[i].item_code, is_default: '1'}, ['name','total_cost'])
-								.then(r => {
-										let values = r.message;
-										//console.log(values);
-										let t_bom = cur_frm.add_child("bom_list");
-										t_bom.bom = values.name;
-										t_bom.main_item = d.items[i].item_code;
-										t_bom.cost_per_unit = values.total_cost
-										t_bom.material_request_ref = material_requests[s].material_request;
-										cur_frm.refresh_field("bom_list");
-	
-										frappe.db.get_doc('BOM', values.name)
-											.then(b => {
-												//console.log(b.items);
-												for (let j = 0; j < b.items.length; j++){
-													let recipe_item = cur_frm.add_child("recipe_items");
-													recipe_item.item_code = b.items[j].item_code;
-													recipe_item.item_name = b.items[j].item_name;
-													recipe_item.qty = b.items[j].qty;
-													recipe_item.uom = b.items[j].uom;
-													frappe.db.get_value("Bin", {"item_code":b.items[j].item_code, "warehouse":cur_frm.doc.source_warehouse}, ["actual_qty","valuation_rate"]).then((r)=>{
-														if(r.message.actual_qty){
-															recipe_item.available_qty = r.message.actual_qty;
-														}
-														if(r.message.valuation_rate){
-															let price = 0;
-															price = r.message.valuation_rate
-															recipe_item.rate = price;
-															recipe_item.amount = b.items[j].qty * price;
-														}
-													cur_frm.refresh_field("recipe_items");
-													})
-													recipe_item.parent_item = d.items[i].item_code;
-													recipe_item.bom = values.name;
-													recipe_item.material_request_ref = material_requests[s].material_request;
-												}
-										cur_frm.refresh_field("recipe_items");
-										})
-								})
-							}		
-					})
+				var material_requests_numbers = [];
+				for(var i in material_requests){
+					material_requests_numbers.push(material_requests[i].material_request);
 				}
+				//console.log(material_requests_numbers);
+				frappe.call({
+						method: "kitchen_module.kitchen_module.doctype.meal_process.meal_process.material_request_get_items",
+						args: {
+								"material_requests": material_requests_numbers,
+								"source_warehouse": frm.doc.source_warehouse
+						},
+						freeze: true,
+    					freeze_message: "Processing",
+						callback: function(r) {
+								if(r.message) {
+									//console.log(r.message);
+									let main_items = r.message[0];
+									let boms = r.message[1];
+									let recipe_items = r.message[2];
+									console.log(main_items,boms,recipe_items);
+									for (let i = 0; i < main_items.length; i++){
+										let main_item = cur_frm.add_child("main_items");
+											main_item.item_code = main_items[i].item_code;
+											main_item.item_name = main_items[i].item_name;
+											main_item.qty = main_items[i].qty;
+											main_item.uom = main_items[i].uom;
+											main_item.rate = main_items[i].rate;
+											main_item.amount = main_items[i].amount;
+											main_item.material_request_ref = main_items[i].parent;
+											cur_frm.refresh_field("main_items");
+									}
+
+									for(let j=0;j<boms.length; j++){
+										let t_bom = cur_frm.add_child("bom_list");
+										t_bom.bom = boms[j].bom_name;
+										t_bom.main_item = boms[j].main_item;
+										t_bom.cost_per_unit = boms[j].total_cost;
+										t_bom.material_request_ref = boms[j].material_request;
+										cur_frm.refresh_field("bom_list");
+									}
+
+									for (let k = 0; k < recipe_items.length; k++){
+										let recipe_item = cur_frm.add_child("recipe_items");
+											recipe_item.item_code = recipe_items[k].item_code;
+											recipe_item.item_name = recipe_items[k].item_name;
+											recipe_item.qty = recipe_items[k].qty;
+											recipe_item.uom = recipe_items[k].uom;
+											recipe_item.available_qty = recipe_items[k].available_qty;
+											recipe_item.rate = recipe_items[k].rate;
+											recipe_item.amount = recipe_items[k].amount;
+											recipe_item.parent_item = recipe_items[k].parent_item;
+											recipe_item.bom = recipe_items[k].bom;
+											recipe_item.material_request_ref = recipe_items[k].material_request;
+											cur_frm.refresh_field("recipe_items");
+									} 	
+								}
+						}
+				});
 			}
 		}
 		else{

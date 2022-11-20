@@ -2,6 +2,7 @@
 # For license information, please see license.txt
 
 import frappe
+import json
 from frappe import _, msgprint
 from frappe.model.document import Document
 
@@ -115,4 +116,97 @@ class MealProcess(Document):
 			msgprint(_("The task has been enqueued as a background job. In case there is any issue on processing in background, the system will add a comment about the error on this Meal Process and revert to the Draft stage"))
 			self.queue_action('submit', timeout=3000)
 		else:
-			self._submit()			
+			self._submit()
+
+@frappe.whitelist()
+def sales_order_get_items(sales_orders,source_warehouse):
+	sales_order = json.loads(sales_orders)
+	main_items = []
+	for so in sales_order:
+		so_items = frappe.db.sql('''select item_code,item_name,qty,uom,rate,amount,parent from `tabSales Order Item` 
+							where `tabSales Order Item`.parent = "{0}"'''.format(so),as_dict = 1)
+		for soi in so_items:					
+			main_items.append(soi)					
+
+	bom = {}
+	boms = []
+	recipe_item = {}
+	recipe_items = []
+
+	for item in main_items:
+		bom['bom_name'] = frappe.db.get_value("BOM", {"item": item.item_code, "is_default": 1}, "name")
+		bom['total_cost'] = frappe.db.get_value("BOM", {"item": item.item_code, "is_default": 1}, "total_cost")
+		bom['main_item'] = item.item_code
+		bom['sales_order'] = item.parent					
+
+		bom_copy = bom.copy()
+		boms.append(bom_copy)
+
+		if bom['bom_name']:
+			bom_doc = frappe.get_doc('BOM', bom['bom_name'])
+			bom_doc_items = bom_doc.items
+			for re_item in bom_doc_items:
+				recipe_item['item_code'] = re_item.item_code
+				recipe_item['item_name'] = re_item.item_name
+				recipe_item['qty'] = re_item.qty
+				recipe_item['uom'] = re_item.uom
+				recipe_item['available_qty'] = frappe.db.get_value("Bin", {"item_code":re_item.item_code, "warehouse":source_warehouse}, "actual_qty")
+				recipe_item['rate'] = frappe.db.get_value("Bin", {"item_code":re_item.item_code, "warehouse":source_warehouse}, "valuation_rate")
+				recipe_item['amount'] = recipe_item['qty'] * recipe_item['rate']
+				recipe_item['parent_item'] = item.item_code
+				recipe_item['bom'] = re_item.parent
+				recipe_item['sales_order'] = item.parent
+
+				recipe_item_copy = recipe_item.copy()
+				recipe_items.append(recipe_item_copy)
+
+	
+	return main_items,boms,recipe_items
+
+
+@frappe.whitelist()
+def material_request_get_items(material_requests,source_warehouse):
+	material_request = json.loads(material_requests)
+	main_items = []
+	for mr in material_request:
+		mr_items = frappe.db.sql('''select item_code,item_name,qty,uom,rate,amount,parent from `tabMaterial Request Item` 
+							where `tabMaterial Request Item`.parent = "{0}"'''.format(mr),as_dict = 1)
+		for mri in mr_items:					
+			main_items.append(mri)					
+
+	bom = {}
+	boms = []
+	recipe_item = {}
+	recipe_items = []
+
+	for item in main_items:
+		bom['bom_name'] = frappe.db.get_value("BOM", {"item": item.item_code, "is_default": 1}, "name")
+		bom['total_cost'] = frappe.db.get_value("BOM", {"item": item.item_code, "is_default": 1}, "total_cost")
+		bom['main_item'] = item.item_code
+		bom['material_request'] = item.parent					
+
+		bom_copy = bom.copy()
+		boms.append(bom_copy)
+
+		if bom['bom_name']:
+			bom_doc = frappe.get_doc('BOM', bom['bom_name'])
+			bom_doc_items = bom_doc.items
+			for re_item in bom_doc_items:
+				recipe_item['item_code'] = re_item.item_code
+				recipe_item['item_name'] = re_item.item_name
+				recipe_item['qty'] = re_item.qty
+				recipe_item['uom'] = re_item.uom
+				recipe_item['available_qty'] = frappe.db.get_value("Bin", {"item_code":re_item.item_code, "warehouse":source_warehouse}, "actual_qty")
+				recipe_item['rate'] = frappe.db.get_value("Bin", {"item_code":re_item.item_code, "warehouse":source_warehouse}, "valuation_rate")
+				recipe_item['amount'] = recipe_item['qty'] * recipe_item['rate']
+				recipe_item['parent_item'] = item.item_code
+				recipe_item['bom'] = re_item.parent
+				recipe_item['material_request'] = item.parent
+
+				recipe_item_copy = recipe_item.copy()
+				recipe_items.append(recipe_item_copy)
+
+	
+	return main_items,boms,recipe_items
+
+
