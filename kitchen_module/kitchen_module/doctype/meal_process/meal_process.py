@@ -14,7 +14,7 @@ class MealProcess(Document):
 				for j in self.recipe_items:
 					if i.item_code == j.parent_item and i.sales_order_ref == j.sales_order_ref:
 						if i.qty > 1:
-							j.qty = j.qty * i.qty
+							j.qty = j.bom_qty * i.qty
 							if j.rate:
 								j.amount = j.qty * j.rate
 								cost = cost + j.amount
@@ -29,7 +29,7 @@ class MealProcess(Document):
 				for j in self.recipe_items:
 					if i.item_code == j.parent_item and i.material_request_ref == j.material_request_ref:
 						if i.qty > 1:
-							j.qty = j.qty * i.qty
+							j.qty = j.bom_qty * i.qty
 							if j.rate:
 								j.amount = j.qty * j.rate
 								cost = cost + j.amount

@@ -109,7 +109,7 @@ frappe.ui.form.on('Meal Process', {
 										let recipe_item = cur_frm.add_child("recipe_items");
 											recipe_item.item_code = recipe_items[k].item_code;
 											recipe_item.item_name = recipe_items[k].item_name;
-											recipe_item.qty = recipe_items[k].qty;
+											recipe_item.bom_qty = recipe_items[k].qty;
 											recipe_item.uom = recipe_items[k].uom;
 											recipe_item.available_qty = recipe_items[k].available_qty;
 											recipe_item.rate = recipe_items[k].rate;
@@ -173,7 +173,7 @@ frappe.ui.form.on('Meal Process', {
 										let recipe_item = cur_frm.add_child("recipe_items");
 											recipe_item.item_code = recipe_items[k].item_code;
 											recipe_item.item_name = recipe_items[k].item_name;
-											recipe_item.qty = recipe_items[k].qty;
+											recipe_item.bom_qty = recipe_items[k].qty;
 											recipe_item.uom = recipe_items[k].uom;
 											recipe_item.available_qty = recipe_items[k].available_qty;
 											recipe_item.rate = recipe_items[k].rate;
